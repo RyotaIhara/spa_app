@@ -1,49 +1,26 @@
 <template>
-  <div class="container">
-    <div id="app">
-      <table class="table">
-        <tbody>
-          <tr>
-            <th>ID</th>
-            <th>ユーザー名</th>
-            <th>年齢</th>
-            <th>性別</th>
-            <th>備考</th>
-          </tr>
-          <tr v-for="u in users" :key="u.id">
-            <td>{{ u.id }}</td>
-            <td>{{ u.name }}</td>
-            <td>{{ u.age }}</td>
-            <td v-if="u.gender == true">男</td>
-            <td v-else>女</td>
-            <td>{{ u.note }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import Vue from "vue";
+import VueRouter from "vue-router";
+
+import EmployeeIndexPage from "EmployeeIndexPage.vue";
+
+const router = new VueRouter({
+  routes: [{ path: "/", component: EmployeeIndexPage }],
+});
+
+// ref. https://jp.vuejs.org/v2/guide/plugins.html#%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E4%BD%BF%E7%94%A8
+Vue.use(VueRouter);
 
 export default {
-  data: function () {
-    return {
-      users: [],
-    };
-  },
-  mounted() {
-    axios
-      .get("/api/v1/users.json")
-      .then((response) => (this.users = response.data));
-  },
+  router,
 };
 </script>
 
 <style scoped>
-p {
-  font-size: 2em;
-  text-align: center;
-}
 </style>
