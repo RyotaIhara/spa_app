@@ -1,5 +1,5 @@
 <template>
-  <user-form-pane :errors="errors" :user="user" @submit="createUser"></user-form-pane>
+  <user-form-pane :errors="errors" :user="user" @submit="updateUser"></user-form-pane>
 </template>
 
 <script>
@@ -13,21 +13,20 @@ export default {
   },
   data: function () {
     return {
-      user: {
-        name: "",
-        age: "",
-        gender: "",
-        note: "",
-      },
+      user: {},
       errors: "",
     };
   },
+  mounted() {
+    axios
+      .get(`/api/v1/users/${this.$route.params.id}.json`)
+      .then((response) => (this.user = response.data));
+  },
   methods: {
-    createUser: function () {
+    updateUser: function () {
       axios
-        .post("/api/v1/users", this.user)
+        .patch(`/api/v1/users/${this.$route.params.id}`, this.user)
         .then((response) => {
-          let e = response.data;
           this.$router.push({ name: "UserIndexPage" });
         })
         .catch((error) => {

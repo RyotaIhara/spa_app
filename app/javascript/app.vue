@@ -10,11 +10,25 @@ import VueRouter from "vue-router";
 
 import UserIndexPage from "./users/UserIndexPage.vue";
 import UserNewPage from "./users/UserNewPage.vue";
+import UserEditPage from "./users/UserEditPage.vue";
 
 const router = new VueRouter({
   routes: [
-    { path: "/", name: "UserIndexPage", component: UserIndexPage },
-    { path: "/users/new", name: "UserNewPage", component: UserNewPage },
+    {
+      path: "/",
+      name: "UserIndexPage",
+      component: UserIndexPage,
+    },
+    {
+      path: "/users/new",
+      name: "UserNewPage",
+      component: UserNewPage,
+    },
+    {
+      path: "/users/:id(\\d+)/edit",
+      name: "UserEditPage",
+      component: UserEditPage,
+    },
   ],
 });
 
