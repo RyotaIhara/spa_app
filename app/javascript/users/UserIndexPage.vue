@@ -2,6 +2,7 @@
   <div id="app">
     <div>
       <router-link :to="{ name: 'UserNewPage' }">新規作成</router-link>
+      <button @click="showCreateModal = true">新規作成２</button>
     </div>
     <table class="table">
       <tbody>
@@ -20,14 +21,21 @@
           <td>{{ u.gender }}</td>
           <td>{{ u.note }}</td>
           <td>
-            <button @click="deleteTarget = u.id; showModal = true">Delete</button>
+            <button @click="deleteTarget = u.id; showDeleteModal = true">Delete</button>
           </td>
         </tr>
       </tbody>
     </table>
-    <modal v-if="showModal" @cancel="showModal = false" @ok="deleteUser(); showModal = false;">
+    <!-- 削除確認モーダル -->
+    <modal
+      v-if="showDeleteModal"
+      @cancel="showDeleteModal = false"
+      @ok="deleteUser(); showDeleteModal = false;"
+    >
       <div slot="body">Are you sure?</div>
     </modal>
+    <!-- 新規作成フォームモーダル -->
+    <user-new-page v-if="showCreateModal" v-on:created="closeModal" v-on:cancel="closeModal"></user-new-page>
   </div>
 </template>
 
@@ -35,15 +43,18 @@
 import axios from "axios";
 
 import Modal from "shared/Modal.vue";
+import UserNewPage from "users/UserNewPageModal.vue";
 
 export default {
   components: {
     Modal,
+    UserNewPage,
   },
   data: function () {
     return {
       users: [],
-      showModal: false,
+      showDeleteModal: false,
+      showCreateModal: false,
       deleteTarget: -1,
       errors: "",
     };
@@ -75,6 +86,10 @@ export default {
       axios
         .get("/api/v1/users.json")
         .then((response) => (this.users = response.data));
+    },
+    closeModal: function () {
+      this.showCreateModal = false;
+      this.updateUsers();
     },
   },
 };
