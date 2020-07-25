@@ -8,6 +8,9 @@ import axios from "axios";
 import UserFormPane from "users/UserFormPane.vue";
 
 export default {
+  props: {
+    editTarget: Number,
+  },
   components: {
     UserFormPane,
   },
@@ -19,15 +22,17 @@ export default {
   },
   mounted() {
     axios
-      .get(`/api/v1/users/${this.$route.params.id}.json`)
+      .get(`/api/v1/users/${this.editTarget}.json`)
       .then((response) => (this.user = response.data));
   },
   methods: {
     updateUser: function () {
       axios
-        .patch(`/api/v1/users/${this.$route.params.id}`, this.user)
+        .patch(`/api/v1/users/${this.editTarget}`, this.user)
         .then((response) => {
-          this.$router.push({ name: "UserIndexPage" });
+          console.log("メソッドが動いた");
+          let e = response.data;
+          this.$emit("edited");
         })
         .catch((error) => {
           console.error(error);

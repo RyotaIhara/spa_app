@@ -28,7 +28,7 @@ export default {
         .post("/api/v1/users", this.user)
         .then((response) => {
           let e = response.data;
-          this.$router.push({ name: "UserIndexPage" });
+          this.$emit("created");
         })
         .catch((error) => {
           console.error(error);

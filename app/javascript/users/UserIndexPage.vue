@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <div>
-      <router-link :to="{ name: 'UserNewPage' }">新規作成</router-link>
-      <button @click="showCreateModal = true">新規作成２</button>
+      <b-button v-b-modal.new-user>新規作成</b-button>
     </div>
     <table class="table">
       <tbody>
@@ -14,28 +13,49 @@
           <th>操作</th>
         </tr>
         <tr v-for="u in users" :key="u.id">
-          <td>
-            <router-link :to="{ name: 'UserEditPage', params: { id: u.id } }">{{ u.name }}</router-link>
-          </td>
+          <td>{{ u.name }}</td>
           <td>{{ u.age }}</td>
           <td>{{ u.gender }}</td>
           <td>{{ u.note }}</td>
           <td>
-            <button @click="deleteTarget = u.id; showDeleteModal = true">Delete</button>
+            <b-button v-b-modal.edit-user class="btn-success" @click="editTarget = u.id">編集</b-button>
+            <b-button v-b-modal.delete-user class="btn-danger" @click="deleteTarget = u.id">削除</b-button>
           </td>
         </tr>
       </tbody>
     </table>
+    <!-- 新規作成モーダル -->
+    <b-modal id="new-user" title="ユーザー追加" hide-footer>
+      <div>
+        <user-new-page v-on:created="closeNewModal"></user-new-page>
+      </div>
+    </b-modal>
+    <!-- 編集モーダル -->
+    <b-modal id="edit-user" title="ユーザー編集" hide-footer>
+      <div>
+        <user-edit-page :editTarget="editTarget" v-on:edited="closeEditModal"></user-edit-page>
+      </div>
+    </b-modal>
     <!-- 削除確認モーダル -->
-    <modal
-      v-if="showDeleteModal"
-      @cancel="showDeleteModal = false"
-      @ok="deleteUser(); showDeleteModal = false;"
-    >
-      <div slot="body">Are you sure?</div>
-    </modal>
-    <!-- 新規作成フォームモーダル -->
-    <user-new-page v-if="showCreateModal" v-on:created="closeModal" v-on:cancel="closeModal"></user-new-page>
+    <b-modal id="delete-user">
+      <div>
+        <b class="lead">削除してもよろしいですか？</b>
+      </div>
+      <template v-slot:modal-footer>
+        <div class="w-100 text-right">
+          <b-button
+            variant="primary"
+            @click="deleteUser(); show=$bvModal.hide('delete-user')"
+            class="text-right"
+          >OK</b-button>
+          <b-button
+            variant="primary"
+            @click="show=$bvModal.hide('delete-user')"
+            class="text-right btn-danger"
+          >cancel</b-button>
+        </div>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -43,18 +63,22 @@
 import axios from "axios";
 
 import Modal from "shared/Modal.vue";
-import UserNewPage from "users/UserNewPageModal.vue";
+import UserNewPage from "users/UserNewPage.vue";
+import UserEditPage from "users/UserEditPage.vue";
 
 export default {
   components: {
     Modal,
     UserNewPage,
+    UserEditPage,
   },
   data: function () {
     return {
       users: [],
       showDeleteModal: false,
       showCreateModal: false,
+      showEditModal: false,
+      editTarget: -1,
       deleteTarget: -1,
       errors: "",
     };
@@ -87,8 +111,12 @@ export default {
         .get("/api/v1/users.json")
         .then((response) => (this.users = response.data));
     },
-    closeModal: function () {
-      this.showCreateModal = false;
+    closeNewModal: function () {
+      this.$bvModal.hide("new-user");
+      this.updateUsers();
+    },
+    closeEditModal: function () {
+      this.$bvModal.hide("edit-user");
       this.updateUsers();
     },
   },
