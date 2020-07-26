@@ -25,13 +25,13 @@
       </tbody>
     </table>
     <!-- 新規作成モーダル -->
-    <b-modal id="new-user" title="ユーザー追加" hide-footer>
+    <b-modal id="new-user" title="ユーザー追加" size="lg" hide-footer>
       <div>
         <user-new-page v-on:created="closeNewModal"></user-new-page>
       </div>
     </b-modal>
     <!-- 編集モーダル -->
-    <b-modal id="edit-user" title="ユーザー編集" hide-footer>
+    <b-modal id="edit-user" title="ユーザー編集" size="lg" hide-footer>
       <div>
         <user-edit-page :editTarget="editTarget" v-on:edited="closeEditModal"></user-edit-page>
       </div>
