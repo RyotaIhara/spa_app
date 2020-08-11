@@ -1,0 +1,11 @@
+DB識別子：
+spa-app-1
+
+マスターユーザー名：
+masterUser
+
+マスターパスワード：
+maseterPassword
+
+DB:
+spa_app_production

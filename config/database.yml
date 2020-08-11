@@ -81,5 +81,5 @@ test:
 production:
   <<: *default
   database: spa_app_production
-  username: spa_app
-  password: <%= ENV['SPA_APP_DATABASE_PASSWORD'] %>
+  #username: spa_app
+  #password: <%= ENV['SPA_APP_DATABASE_PASSWORD'] %>
